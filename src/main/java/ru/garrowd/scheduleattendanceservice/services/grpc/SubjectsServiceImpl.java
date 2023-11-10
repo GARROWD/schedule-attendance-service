@@ -8,7 +8,7 @@ import ru.garrowd.scheduleattendanceservice.models.AcademicSubject;
 import ru.garrowd.scheduleattendanceservice.services.AcademicSubjectsService;
 
 
-/*@GRpcService
+@GRpcService
 @Slf4j
 @RequiredArgsConstructor
 public class SubjectsServiceImpl
@@ -34,5 +34,5 @@ public class SubjectsServiceImpl
 
         responseObserver.onCompleted();
     }
-}*/
+}
 
