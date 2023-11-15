@@ -85,7 +85,7 @@ public class AttendanceService {
             return attendancePage;
         }
 
-        Lesson lesson = new Lesson(); // lessonsService.getByTeacherIdAndDateAndStartTimeAndEndTime(teacherId, date, startTime, endTime);
+        Lesson lesson = lessonsService.getByTeacherIdAndDateAndStartTimeAndEndTime(teacherId, date, startTime, endTime);
 
         StudentsByGroupAndDirectionResponse students = stub.getStudentsByGroupAndDirection(
                 StudentsByGroupRequest.newBuilder()
@@ -127,14 +127,6 @@ public class AttendanceService {
         attendance.setAttended(! attendance.getAttended());
 
         attendanceRepository.save(attendance);
-    }
-
-    public Integer numberOfAttended(String studentId, String academicSubjectId) {
-        return attendanceRepository.countAllByStudentIdAndAcademicSubject_Id(studentId, academicSubjectId);
-    }
-
-    public Integer numberOfLessons(String academicSubjectId) {
-        return attendanceRepository.countAllByAcademicSubject_Id(academicSubjectId);
     }
 
     // TODO Как правильно делается редактирование?

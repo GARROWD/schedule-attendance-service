@@ -37,7 +37,7 @@ public class LessonsService {
     private final ValidationService validationService;
     private final ModelMapper modelMapper;
 
-    //private final AcademicSubjectsService academicSubjectsService;
+    private final AcademicSubjectsService academicSubjectsService;
 
     public Lesson getById(String id)
             throws NotFoundException {
@@ -107,7 +107,7 @@ public class LessonsService {
             throw new LessonCollisionException(exceptionMessages.getMessage(ExceptionMessages.LESSON_INVALID_TIME_RANGE));
         }
 
-        AcademicSubject academicSubject = new AcademicSubject();// academicSubjectsService.getById(subjectId);
+        AcademicSubject academicSubject = academicSubjectsService.getById(subjectId);
 
         if(!academicSubject.getDirection().equals(direction)){
             throw new DifferentDirectionsException(exceptionMessages.getMessage(ExceptionMessages.LESSON_INVALID_DIRECTION));

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.garrowd.scheduleattendanceservice.models.AcademicSubject;
 import ru.garrowd.scheduleattendanceservice.models.extras.AcademicSubjectAttendance;
 import ru.garrowd.scheduleattendanceservice.repositories.AcademicSubjectsRepository;
+import ru.garrowd.scheduleattendanceservice.repositories.AttendanceRepository;
 import ru.garrowd.scheduleattendanceservice.services.validators.ValidationService;
 import ru.garrowd.scheduleattendanceservice.utils.enums.ExceptionMessages;
 import ru.garrowd.scheduleattendanceservice.utils.exceptions.NotFoundException;
@@ -23,10 +24,9 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @Slf4j
 public class AcademicSubjectsService {
-    private final AttendanceService attendanceService;
-
     private final ExceptionMessagesService exceptionMessages;
     private final AcademicSubjectsRepository academicSubjectsRepository;
+    private final AttendanceRepository attendanceRepository;
 
     private final ValidationService validationService;
     private final ModelMapper modelMapper;
@@ -52,9 +52,9 @@ public class AcademicSubjectsService {
 
         List<AcademicSubjectAttendance> academicSubjectAttendanceList = academicSubjectPage.getContent().stream().map(
                 academicSubject ->
-                        AcademicSubjectAttendance.builder().numberOfAttended(attendanceService.numberOfAttended(
+                        AcademicSubjectAttendance.builder().numberOfAttended(numberOfAttended(
                                                                  studentId, academicSubject.getId()))
-                                                 .numberOfLessons(attendanceService.numberOfLessons(academicSubject.getId()))
+                                                 .numberOfLessons(numberOfLessons(academicSubject.getId()))
                                                  .academicSubject(academicSubject)
                                                  .build()).toList();
 
@@ -99,5 +99,14 @@ public class AcademicSubjectsService {
         academicSubjectsRepository.save(academicSubject);
 
         log.info("Subject with ID {} is updated", academicSubject.getId());
+    }
+
+    // TODO Изначально эти методы были в AttendanceService, но у меня возникла циклическая зависимость, которую надо было быстро исправить. Я не придумал ничего лучше
+    public Integer numberOfAttended(String studentId, String academicSubjectId) {
+        return attendanceRepository.countAllByStudentIdAndAcademicSubject_Id(studentId, academicSubjectId);
+    }
+
+    public Integer numberOfLessons(String academicSubjectId) {
+        return attendanceRepository.countAllByAcademicSubject_Id(academicSubjectId);
     }
 }
